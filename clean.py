@@ -13,7 +13,7 @@ paths = [path1, path2, path3, path4]
 
 for path in paths:
     # if path.exists():
-    if os.path.exists(path):
+    if  os.path.exists(path):
         os.chdir(path)
         os.system('pwd')
         os.system('rm -rf *')
