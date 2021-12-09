@@ -1,1 +1,0 @@
-### Research on Quantitative Trading
