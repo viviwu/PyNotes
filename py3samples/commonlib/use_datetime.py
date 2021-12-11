@@ -20,12 +20,13 @@ t = dt.timestamp()
 print('timestamp -> datetime:', datetime.fromtimestamp(t))
 print('timestamp -> datetime as UTC+0:', datetime.utcfromtimestamp(t))
 
+# 把datetime格式化输出:
+date_time = datetime.now()
+print('strftime:', date_time.strftime('%a, %b %d %H:%M'))
+
 # 从str读取datetime:
 cday = datetime.strptime('2015-6-1 18:19:59', '%Y-%m-%d %H:%M:%S')
 print('strptime:', cday)
-
-# 把datetime格式化输出:
-print('strftime:', cday.strftime('%a, %b %d %H:%M'))
 
 # 对日期进行加减:
 print('current datetime =', cday)
