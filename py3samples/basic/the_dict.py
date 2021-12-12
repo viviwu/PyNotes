@@ -11,6 +11,7 @@ print('d[\'Bob\'] =', d['Bob'])
 print('d[\'Tracy\'] =', d['Tracy'])
 print('d.get(\'Thomas\', -1) =', d.get('Thomas', -1))
 
+print('1', list(d))
 print(d.items())
 print(d.keys())
 print(d.values())

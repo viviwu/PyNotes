@@ -14,18 +14,29 @@ import pandas as pd
 from datetime import datetime
 from typing import List,Dict
 
+res_path = "/Users/viviwu/Dev/data"
+
 class DataLoader:
 
-    def __init__(self):
+    def __init__(self, start_date=None, end_date=None):
         self.trading_dates: List = []
         self.data: List[List] = []
         self.stk_data: List[Dict] = []
         self.idx_data: pd.DataFrame = None
         self.data: List[List] = []
 
+        self.start_date = '2020-12-28'      #'2020-01-02'
+        self.end_date = '2020-12-28'
+        if start_date is not None:
+            self.start_date = start_date
+        if end_date is not None:
+            self.end_date = end_date
+
     def load_calendar_from_db(self):
-        with sqlite3.connect("F:\\data\\trade_sys.db") as conn:
-            sql_cmd = "SELECT * FROM trading_dates where trading_date >= '2021-11-26' and trading_date <= '2021-11-28' "
+
+        with sqlite3.connect("%s/trade_sys.db"%(res_path)) as conn:
+            sql_cmd = "SELECT * FROM trading_dates where trading_date >= '%s' and trading_date <= '%s' " % (
+            self.start_date, self.end_date)
             # sql_cmd = "SELECT * FROM self.trading_dates where trading_date = '2021-12-01'"
             df = pd.read_sql(sql_cmd, con=conn)
             self.trading_dates = df['trading_date'].to_list()
@@ -35,7 +46,7 @@ class DataLoader:
 
     def load_bars_from_db(self):
 
-        with sqlite3.connect("F:\\data\\daybars.db") as conn:
+        with sqlite3.connect("%/daybars.db"%(res_path)) as conn:
             for date in self.trading_dates:
                 #date_str = datetime.strftime(date, '%Y%m%d')
                 date_str = date.replace('-', '')
@@ -62,43 +73,36 @@ class DataLoader:
 
 
     def load_bars_from_db2(self):
-        stk_df: pd.DataFrame = None
-        with sqlite3.connect("F:\\data\\daybars.db") as conn:
+        # stks_df: pd.DataFrame = None
+        day_list: List = []
+        with sqlite3.connect("%s/daybars.db"%(res_path)) as conn:
+
             for date in self.trading_dates:
                 #date_str = datetime.strftime(date, '%Y%m%d')
                 date_str = date.replace('-', '')
                 sql_cmd = "select * from \'{}\'".format(date_str)
                 df = pd.read_sql(sql_cmd, con=conn)
                 df.rename(columns={'order_book_id': 'code', 'date': 'datetime'}, inplace=True)
-                xdf = df.set_index("code")  # 将指定列设置为index
-
-                day_records = xdf.to_dict(orient='index')
-
-                day_inf: Dict = {}
-                for code,bar_inf in day_records.items():
-                    day_inf[code] = pd.DataFrame(data=[bar_inf])
-                stk_day_df = pd.DataFrame(data=[day_inf], index=[date])
-                # print(stk_day_df)
-                if  stk_df is None:
-                    stk_df = stk_day_df
-                else:
-                    stk_df = pd.concat([stk_df, stk_day_df], axis=0, sort=False)
-
-                self.data.append([])
-
-            print(stk_df)
-            print(len(stk_df.index))
-            for i in range(len(self.trading_dates)):
-                date = self.trading_dates[i]
-                stk_day_df = stk_df.loc[date]       # Series
-                # print(len(stk_day_df.values), stk_day_df.values)
-                 
+                df.set_index("code", inplace=True)  # 将指定列设置为index
+                # print(df)
+                # print(df.to_dict(orient='series'))
+                # print(df.to_dict(orient='records'))
+                dicdt = df.to_dict(orient='index')
+                stks_dic:Dict = {}
+                for k,v in dicdt.items():
+                    stks_dic[k]=[v]
+                print(len(stks_dic), list(stks_dic.values())[0])
+                xdf = pd.DataFrame(data=stks_dic)
+                # print(xdf)
+                day_list.append(xdf)
+            # stks_df = pd.DataFrame(data=day_list)
+            print(day_list)
 
 
     def load_index_from_db(self):
         print(self.trading_dates)
 
-        with sqlite3.connect("F:\\data\\idx_daybars.db") as conn:
+        with sqlite3.connect("%s/idx_daybars.db"%(res_path)) as conn:
             for date in self.trading_dates:
                 # print(date)
                 date_str = date.replace('-', '')

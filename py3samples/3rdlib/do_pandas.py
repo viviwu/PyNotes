@@ -12,17 +12,11 @@ import sys
 import numpy as np
 import pandas as pd
 
-dt = np.arange(5,10)
-series = pd.Series(data=dt, index=['a','b','c','d','e'])
-print(series)
 
-arr2d = np.random.random((3,4))
-df = pd.DataFrame(data=arr2d, columns=['a','b','c','d'], index=['r0','r1','r2'])
-print(df)
 
 # key/value
 def pd_series():
-    method = 1
+    method = 0
     if  method == 0:
         values = ['Apple', 'Google', 'Meta', '百度']
         idx = ['A', 'B', 'C', 'D']
@@ -32,8 +26,9 @@ def pd_series():
         series = pd.Series(data=dict)
 
     print(series)
-    print(series.values, series.index)
+    print(series.values, series.index.tolist())
     print(series.to_json())
+    print(series[1])
 
 def pd_dataframe():
     method = 0
@@ -126,6 +121,10 @@ def df_fromat_date():
 
 
 def do_series_map():
+    dt = np.arange(5, 10)
+    series = pd.Series(data=dt, index=['a', 'b', 'c', 'd', 'e'])
+    print(series)
+
     series1 = series.map(lambda x: '%.3f'%x)
     series2 = series.apply(lambda x: '%.2f' % x)
     print(series1)
@@ -133,6 +132,9 @@ def do_series_map():
 
 
 def do_dataframe_apply_map():
+    arr2d = np.random.random((3, 4))
+    df = pd.DataFrame(data=arr2d, columns=['a', 'b', 'c', 'd'], index=['r0', 'r1', 'r2'])
+    print(df)
 
     print(df['a'].map(lambda x:x*10))  # series map
     print(df['a'].apply(lambda x:x*10)) # series apply
@@ -148,12 +150,20 @@ def do_dataframe_apply_map():
 
 
 def slice_dataframe():
-    print(df['a'])
-    print(df.d)
-    print(df[['b', 'c']])
+    arr2d = np.random.random((3, 4))
+    df = pd.DataFrame(data=arr2d, columns=['a', 'b', 'c', 'd'], index=['r0', 'r1', 'r2'])
+    print(df)
 
-    print(df.loc['r0'])
-    print(df.loc[['r1', 'r2']])
+    info = df.to_dict(orient='series')
+    print(list(info.keys()))
+    print(list(info.values()))
+
+    # print(df['a'])
+    # print(df.d)
+    # print(df[['b', 'c']])
+    #
+    # print(df.loc['r0'])
+    # print(df.loc[['r1', 'r2']])
 
     '''
     orient : str {'dict', 'list', 'series', 'split', 'records', 'index'}
@@ -168,12 +178,18 @@ def slice_dataframe():
                   [{column -> value}, ... , {column -> value}]
                 - 'index' : dict like {index -> {column -> value}}
     '''
-    print(df.to_dict(orient='records'))        # list[{dict, dict}]
-    print(df.to_dict(orient='index'))
+    # print('dict\n', df.to_dict(orient='dict'))
+    # print('list\n', df.to_dict(orient='list'))
+    # print('series\n', df.to_dict(orient='series'))
+    # print('split\n', df.to_dict(orient='split'))
+    # print('records\n', df.to_dict(orient='records'))        # list[{dict, dict}]
+    print('index\n', df.to_dict(orient='index'))
 
 
 def dataframe_append_concat():
-
+    arr2d = np.random.random((3, 4))
+    df = pd.DataFrame(data=arr2d, columns=['a', 'b', 'c', 'd'], index=['r0', 'r1', 'r2'])
+    print(df)
     cond = 0
     if  cond == 0:
         df2 = pd.DataFrame(data=np.random.random((2, 5)), columns=['a', 'b', 'c', 'd','e'], index=['r3', 'r4'])
@@ -205,6 +221,14 @@ def nested_dataframe():
 # do_series_map()
 # do_dataframe_apply_map()
 # slice_dataframe()
-dataframe_append_concat()
+# dataframe_append_concat()
 # xdf = xdf.drop('datetime', axis=1, inplace=False)
 # nested_dataframe()
+
+# dt = [[1,2,3],
+#       [4,5,6],
+#       [7,8,9],
+#       [10,11]]
+# df=pd.DataFrame(data=dt)
+# print(df)
+
