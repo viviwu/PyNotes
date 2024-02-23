@@ -16,6 +16,7 @@ def now():
 
 now()
 
+'''
 def logger(text):
     def decorator(func):
         @functools.wraps(func)
@@ -31,3 +32,4 @@ def today():
 
 today()
 print(today.__name__)
+'''
